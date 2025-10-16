@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SoftWave Upload</title>
+<style>
+:root{
+  --bg:#071028;
+  --muted:#9aa7c7;
+  --accent1:#2575fc;
+  --accent2:#6a11cb;
+  --accent-grad:linear-gradient(135deg,var(--accent2),var(--accent1));
+  --card-bg:rgba(255,255,255,0.025);
+  --glass:rgba(255,255,255,0.06);
+  --glass-2:rgba(255,255,255,0.03);
+  --success: #2fd17a;
+  --danger: #ff5b5b;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;color:#e6eef8;background:var(--bg);scroll-behavior:smooth;}
+.container{max-width:1100px;margin:0 auto;padding:22px;}
+h1,h2,h3,h4{margin:0;}
+.btn{padding:12px 16px;border-radius:12px;border:0;font-weight:700;cursor:pointer;}
+.btn.primary{background:var(--accent-grad);color:#fff;}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:18px;}
+.card{background:var(--card-bg);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);position:relative;}
+.thumb{height:150px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;margin-bottom:10px;}
+.upload-card{max-width:720px;margin:20px auto;padding:20px;background:var(--glass);border-radius:14px;border:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:10px;}
+.upload-card input, .upload-card textarea{width:100%;padding:10px;border-radius:10px;background:var(--glass-2);border:1px solid rgba(255,255,255,0.06);color:#fff;font-size:14px;}
+.small{font-size:13px;color:var(--muted);}
+.delete-btn{background:var(--danger);color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:800;margin-left:8px;}
+.toast{position:fixed;right:18px;bottom:18px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);display:none;font-weight:700;}
+#demo-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.86);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000;}
+#demo-content{max-width:95%;max-height:95%;}
+#demo-overlay button{position:absolute;top:18px;right:18px;padding:10px 12px;border-radius:10px;border:none;background:#fff;color:#000;font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header style="padding:12px;text-align:center;background:linear-gradient(180deg, rgba(7,16,40,0.95), rgba(7,16,40,0.8));">
+  <h1>SoftWave Upload</h1>
+</header>
+
+<div class="container">
+  <div class="upload-card">
+    <h2>Upload Your Softcopy or Website</h2>
+    <input id="file-title" placeholder="File Title (required)">
+    <textarea id="file-desc" placeholder="Short description (optional)" rows="3"></textarea>
+    <input id="file-price" type="number" min="0" value="0" placeholder="Price (₹)">
+    <input id="file-url" placeholder="File URL (Google Drive / direct link)">
+    <input id="codepen-url" placeholder="CodePen URL (for website embed, optional)">
+    <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+      <button id="upload-btn" class="btn primary">Publish</button>
+      <div class="small">Owner ID: <span id="owner-id">(none)</span></div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:20px;">
+    <h3>All Uploads (Visible to Everyone)</h3>
+    <div class="grid" id="uploads-grid"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="demo-overlay"><button onclick="closeDemo()">Close</button><div id="demo-content"></div></div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const $ = id=>document.getElementById(id);
+  const toast = (msg,t=1800)=>{ const el=$('toast'); el.innerText=msg; el.style.display='block'; setTimeout(()=>el.style.display='none',t); };
+  const getOwnerId=()=>localStorage.getItem('softwaveUserId')||'';
+  const setOwnerId=id=>localStorage.setItem('softwaveUserId',id);
+  const uid=p=>`${p||'id'}_${Date.now()}_${Math.floor(Math.random()*999)}`;
+  const getProducts=()=>JSON.parse(localStorage.getItem('softwaveProducts')||'[]');
+  const saveProducts=arr=>localStorage.setItem('softwaveProducts',JSON.stringify(arr));
+
+  $('owner-id').innerText=getOwnerId()||'(none)';
+
+  function renderUploads(){
+    const grid=$('uploads-grid'); grid.innerHTML='';
+    const products=getProducts(); const owner=getOwnerId();
+    if(!products.length){ grid.innerHTML='<div class="card small">No uploads yet.</div>'; return; }
+    products.forEach(p=>{
+      const div=document.createElement('div'); div.className='card';
+      const thumbText=p.codepenUrl?'WEB':(p.url.split('.').pop()||'FILE').toUpperCase();
+      const thumb=`<div class="thumb">${thumbText}</div>`;
+      const title=`<div class="p-title">${p.title}</div>`;
+      const meta=`<div class="p-meta">${p.desc||''} • ₹${p.price||0}</div>`;
+      let actions='';
+      if(p.codepenUrl) actions+=`<button class="btn ghost view-demo" data-url="${p.codepenUrl.replace('/pen/','/embed/')}">View Demo</button>`;
+      else if(p.url) actions+=`<button class="btn ghost view-demo" data-url="${p.url}">View Demo</button>`;
+      if(owner && p.userId===owner) actions+=` <button class="delete-btn delete-product" data-id="${p.id}">Delete</button>`;
+      div.innerHTML=thumb+title+meta+`<div style="margin-top:10px;">${actions}</div>`;
+      grid.appendChild(div);
+    });
+  }
+
+  $('upload-btn').addEventListener('click',()=>{
+    const title=$('file-title').value.trim();
+    if(!title){ toast('Title required'); return; }
+    const desc=$('file-desc').value.trim();
+    const price=$('file-price').value||0;
+    const url=$('file-url').value.trim();
+    const codepen=$('codepen-url').value.trim();
+    let owner=getOwnerId(); 
+    if(!owner){ owner=uid('user'); setOwnerId(owner); $('owner-id').innerText=owner; toast('Owner ID created'); }
+    const products=getProducts();
+    products.push({id:uid(),title,desc,price,url,codepenUrl:codepen,userId:owner});
+    saveProducts(products);
+    toast('Uploaded successfully');
+    $('file-title').value=''; $('file-desc').value=''; $('file-price').value='0'; $('file-url').value=''; $('codepen-url').value='';
+    renderUploads();
+  });
+
+  document.addEventListener('click',e=>{
+    if(e.target.classList.contains('delete-product')){
+      const id=e.target.dataset.id;
+      const arr=getProducts().filter(p=>p.id!==id);
+      saveProducts(arr); toast('Product deleted'); renderUploads();
+    }
+    if(e.target.classList.contains('view-demo')){
+      $('demo-content').innerHTML=`<iframe src="${e.target.dataset.url}" style="width:100%;height:80vh;border:none;border-radius:12px"></iframe>`;
+      $('demo-overlay').style.display='flex';
+    }
+  });
+
+  window.closeDemo=()=>{$('demo-overlay').style.display='none';$('demo-content').innerHTML='';};
+
+  renderUploads();
+});
+</script>
+
+</body>
+</html>
