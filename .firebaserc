@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "softwave-2c916",
+    "softwave-staging": "softwave-2c916"
+  },
+  "targets": {},
+  "etags": {}
+}
