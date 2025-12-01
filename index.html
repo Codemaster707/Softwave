@@ -1,385 +1,671 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SoftWave - Digital Marketplace</title>
-<style>
-:root{
-  --bg:#071028;
-  --muted:#9aa7c7;
-  --accent1:#2575fc;
-  --accent2:#6a11cb;
-  --accent-grad:linear-gradient(135deg,var(--accent2),var(--accent1));
-  --card-bg:rgba(255,255,255,0.025);
-  --glass:rgba(255,255,255,0.06);
-  --glass-2:rgba(255,255,255,0.03);
-  --success: #2fd17a;
-  --danger: #ff5b5b;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
-  background:var(--bg);
-  color:#e6eef8;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  overflow-x:hidden;
-  scroll-behavior:smooth;
-}
-header{
-  position:sticky; top:0; z-index:1200;
-  background:linear-gradient(180deg, rgba(7,16,40,0.95), rgba(7,16,40,0.8));
-  backdrop-filter: blur(8px);
-  border-bottom:1px solid rgba(255,255,255,0.04);
-}
-.container{max-width:1100px;margin:0 auto;padding:22px}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px}
-.logo .mark{width:44px;height:44px;border-radius:10px;background:var(--accent-grad);display:grid;place-items:center;font-weight:900;font-size:18px}
-nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;transition:.18s}
-nav a:hover, nav a.active{color:#fff;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))}
-section{padding:72px 0;min-height:60vh;position:relative}
-.hero{display:flex;gap:28px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.hero h1{font-size:40px;margin:0;line-height:1.02}
-.accent{background:linear-gradient(90deg,#fff,#d3b6ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{color:var(--muted);margin-top:8px;max-width:520px}
-.btn{padding:12px 16px;border-radius:12px;border:0;font-weight:700;cursor:pointer}
-.btn.primary{background:var(--accent-grad);box-shadow:0 12px 30px rgba(106,17,203,0.12);color:#fff}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:18px}
-.card{background:var(--card-bg);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 28px rgba(2,6,23,0.6);position:relative}
-.card:hover{transform:translateY(-6px);transition:all .18s}
-.thumb{height:150px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;margin-bottom:10px}
-.p-title{font-weight:800;margin:8px 0}
-.p-meta{font-size:13px;color:var(--muted)}
-.upload-card{max-width:720px;margin:20px auto;padding:20px;background:var(--glass);border-radius:14px;border:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:10px}
-.upload-card input, .upload-card textarea{width:100%;padding:10px;border-radius:10px;background:var(--glass-2);border:1px solid rgba(255,255,255,0.06);color:#fff;font-size:14px}
-.small{font-size:13px;color:var(--muted)}
-.info-box{background:var(--glass);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);margin:18px 0}
-.delete-btn{background:var(--danger);color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:800;margin-left:8px}
-.toast{position:fixed;right:18px;bottom:18px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);display:none;font-weight:700}
-#demo-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.86);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000}
-#demo-content{max-width:95%;max-height:95%}
-#demo-overlay button{position:absolute;top:18px;right:18px;padding:10px 12px;border-radius:10px;border:none;background:#fff;color:#000;font-weight:700;cursor:pointer}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SoftWave - Digital Marketplace</title>
+    <style>
+        :root {
+            --bg: #071028;
+            --muted: #9aa7c7;
+            --accent1: #2575fc;
+            --accent2: #6a11cb;
+            --accent-grad: linear-gradient(135deg, var(--accent2), var(--accent1));
+            --card-bg: rgba(255, 255, 255, 0.025);
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-2: rgba(255, 255, 255, 0.03);
+            --success: #2fd17a;
+            --danger: #ff5b5b;
+        }
 
-/* HERO IMAGES FIX */
-.hero-images-top{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-}
-.hero-images-top img{
-  width:48%;
-  height:160px;
-  object-fit:cover;
-  border-radius:12px;
-  transition:transform .2s;
-}
-.hero-images-bottom{
-  display:flex;
-  justify-content:center;
-  margin-top:12px;
-}
-.hero-images-bottom img{
-  width:96%;
-  max-width:500px;
-  height:160px;
-  object-fit:cover;
-  border-radius:12px;
-  transition:transform .2s;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-/* GUIDE BOT */
-#guidebot-button{
-  position:fixed;
-  bottom:18px; right:18px;
-  width:56px; height:56px;
-  border-radius:50%;
-  background:var(--accent-grad);
-  border:none; cursor:pointer;
-  z-index:3000;
-  font-weight:bold; font-size:16px;
-  color:#fff;
-}
-#guidebot-chat{
-  position:fixed;
-  bottom:80px; right:18px;
-  width:320px; max-width:90%;
-  height:400px;
-  background:var(--glass);
-  display:none;
-  flex-direction:column;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,0.06);
-  z-index:3000;
-}
-#guidebot-messages{flex:1;overflow-y:auto;padding:10px;font-size:14px}
-#guidebot-input-container{display:flex;border-top:1px solid rgba(255,255,255,0.1)}
-#guidebot-input{flex:1;padding:8px;border:none;background:transparent;color:#fff;border-radius:0 0 0 0}
-#guidebot-send{padding:8px 12px;background:var(--accent-grad);border:none;color:#fff;cursor:pointer}
-@media (max-width:800px){
-  .hero h1{font-size:28px}
-  .hero{padding:12px}
-  .hero-images-top img, .hero-images-bottom img{width:100%; max-width:100%; height:auto;}
-}
-</style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial;
+            background: var(--bg);
+            color: #e6eef8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1200;
+            background: linear-gradient(180deg, rgba(7, 16, 40, 0.95), rgba(7, 16, 40, 0.8));
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .logo .mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--accent-grad);
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .18s;
+        }
+
+        nav a:hover, nav a.active {
+            color: #fff;
+            background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+        }
+
+        section {
+            padding: 72px 0;
+            min-height: 60vh;
+            position: relative;
+        }
+
+        .hero {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin: 0;
+            line-height: 1.02;
+        }
+
+        .accent {
+            background: linear-gradient(90deg, #fff, #d3b6ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-top: 8px;
+            max-width: 520px;
+        }
+
+        .btn {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 0;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            background: var(--accent-grad);
+            box-shadow: 0 12px 30px rgba(106, 17, 203, 0.12);
+            color: #fff;
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 12px 28px rgba(2,6,23,0.6);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            transition: all .18s;
+        }
+
+        .thumb {
+            height: 150px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .p-title {
+            font-weight: 800;
+            margin: 8px 0;
+        }
+
+        .p-meta {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .upload-card {
+            max-width: 720px;
+            margin: 20px auto;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .upload-card input, .upload-card textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            background: var(--glass-2);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .info-box {
+            background: var(--glass);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            margin: 18px 0;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            margin-left: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
+            display: none;
+            font-weight: 700;
+        }
+
+        #demo-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.86);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+        }
+
+        #demo-content {
+            max-width: 95%;
+            max-height: 95%;
+        }
+
+        #demo-overlay button {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            background: #fff;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* HERO IMAGES FIX */
+        .hero-images-top {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .hero-images-top img {
+            width: 48%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform .2s;
+        }
+
+        .hero-images-bottom {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .hero-images-bottom img {
+            width: 96%;
+            max-width: 500px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform .2s;
+        }
+
+        /* GUIDE BOT */
+        #guidebot-button {
+            position: fixed;
+            bottom: 18px;
+            right: 18px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent-grad);
+            border: none;
+            cursor: pointer;
+            z-index: 3000;
+            font-weight: bold;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        #guidebot-chat {
+            position: fixed;
+            bottom: 80px;
+            right: 18px;
+            width: 320px;
+            max-width: 90%;
+            height: 400px;
+            background: var(--glass);
+            display: none;
+            flex-direction: column;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            z-index: 3000;
+        }
+
+        #guidebot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        #guidebot-input-container {
+            display: flex;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #guidebot-input {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            color: #fff;
+        }
+
+        #guidebot-send {
+            padding: 8px 12px;
+            background: var(--accent-grad);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        @media (max-width: 800px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero {
+                padding: 12px;
+            }
+
+            .hero-images-top img, .hero-images-bottom img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <div class="container nav">
+            <div class="logo">
+                <div class="mark">SW</div>SoftWave
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+                <nav>
+                    <a href="#" data-page="home" class="active">Home</a>
+                    <a href="#" data-page="explore">Explore</a>
+                    <a href="upload.html">Upload</a>
+                    <a href="#" data-page="profiles">Profiles</a>
+                </nav>
+                <button id="clear-data" class="btn ghost" title="Clear all local data">Clear all data</button>
+            </div>
+        </div>
+    </header>
 
-<header>
-  <div class="container nav">
-    <div class="logo"><div class="mark">SW</div>SoftWave</div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <nav>
-        <a href="#" data-page="home" class="active">Home</a>
-        <a href="#" data-page="explore">Explore</a>
-        <a href="upload.html">Upload</a>
-        <a href="#" data-page="profiles">Profiles</a>
-      </nav>
-      <button id="clear-data" class="btn ghost" title="Clear all local data">Clear all data</button>
+    <!-- HERO SECTION -->
+    <section id="home">
+        <div class="container hero">
+            <div style="flex:1;min-width:280px">
+                <h1>Sell your <span class="accent">digital creations</span> safely</h1>
+                <p class="sub">Upload PPTs, websites, ebooks & templates. Simple, private, and visible to everyone.</p>
+                <div style="margin-top:14px; display:flex;gap:12px;flex-wrap:wrap">
+                    <a href="upload.html" class="btn primary">Start Selling</a>
+                    <button id="hero-explore-btn" class="btn ghost">Explore Marketplace</button>
+                </div>
+            </div>
+            <div class="hero-images" style="flex:1;min-width:250px">
+                <div class="hero-images-top">
+                    <img src="hero.jpg" alt="hero1">
+                    <img src="hero2.jpg" alt="hero2">
+                </div>
+                <div class="hero-images-bottom">
+                    <img src="hero3.jpg" alt="hero3">
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO BOXES -->
+        <div class="container info-box">
+            <h2>Why trust SoftWave?</h2>
+            <ul>
+                <li>100% safe environment for U18 users</li>
+                <li>No sign-in required (local owner ID optional)</li>
+                <li>Uploads visible to everyone in the marketplace</li>
+                <li>Profiles & portfolios for creators</li>
+                <li>Private by default until shared</li>
+            </ul>
+        </div>
+
+        <div class="container info-box">
+            <h2>Features</h2>
+            <ul>
+                <li>Instant upload & sharing links</li>
+                <li>Supports PDF, PPTX, DOCX, ZIP, EPUB & website embeds (CodePen)</li>
+                <li>Beautiful preview cards & CodePen embed preview</li>
+                <li>Profile portfolios show only that user's uploads</li>
+                <li>Delete your profile and your uploads</li>
+            </ul>
+        </div>
+
+        <div class="container info-box">
+            <h2>FAQ</h2>
+            <ul>
+                <li><strong>Q:</strong> Is it safe for U18? — <strong>A:</strong> Yes.</li>
+                <li><strong>Q:</strong> Do I need to sign up? — <strong>A:</strong> No; a unique local ID optionally marks ownership.</li>
+                <li><strong>Q:</strong> Can anyone view demos? — <strong>A:</strong> Yes — "View Demo" opens files or embeds.</li>
+                <li><strong>Q:</strong> Can I delete my uploads? — <strong>A:</strong> Yes; use delete buttons on products.</li>
+                <li><strong>Q:</strong> Can I delete my profile? — <strong>A:</strong> Yes; this also deletes all uploads by that profile.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- EXPLORE SECTION -->
+    <section id="explore" style="display:none">
+        <div class="container">
+            <h2>Explore Marketplace</h2>
+            <div class="grid" id="explore-grid">
+                <div class="card small">No uploads yet.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROFILES SECTION -->
+    <section id="profiles" style="display:none">
+        <div class="container">
+            <h2>Seller Profiles</h2>
+            <div class="upload-card" id="profile-form-container">
+                <h3>Create Your Profile</h3>
+                <input id="profile-name" placeholder="Your name (required)">
+                <textarea id="profile-bio" placeholder="Short bio (required)" rows="3"></textarea>
+                <input id="profile-contact" placeholder="Contact number or link (optional)">
+                <input id="profile-img" placeholder="Profile image URL (optional)">
+                <div style="display:flex;gap:10px;margin-top:8px">
+                    <button id="create-profile-btn" class="btn primary">Create Profile</button>
+                    <button id="refresh-profiles" class="btn ghost">Refresh</button>
+                </div>
+            </div>
+            <div class="grid" id="profiles-grid"></div>
+        </div>
+    </section>
+
+    <!-- DEMO OVERLAY -->
+    <div id="demo-overlay">
+        <button onclick="closeDemo()">Close</button>
+        <div id="demo-content"></div>
     </div>
-  </div>
-</header>
 
-<section id="home">
-  <div class="container hero">
-    <div style="flex:1;min-width:280px">
-      <h1>Sell your <span class="accent">digital creations</span> safely</h1>
-      <p class="sub">Upload PPTs, websites, ebooks & templates. Simple, private, and visible to everyone.</p>
-      <div style="margin-top:14px; display:flex;gap:12px;flex-wrap:wrap">
-        <a href="upload.html" class="btn primary">Start Selling</a>
-        <button id="hero-explore-btn" class="btn ghost">Explore Marketplace</button>
-      </div>
-    </div>
-    <div class="hero-images" style="flex:1;min-width:250px">
-      <div class="hero-images-top">
-        <img src="hero.jpg" alt="hero1">
-        <img src="hero2.jpg" alt="hero2">
-      </div>
-      <div class="hero-images-bottom">
-        <img src="hero3.jpg" alt="hero3">
-      </div>
-    </div>
-  </div>
+    <footer style="padding:24px;text-align:center;color:var(--muted)">
+        Made with ❤️ — SoftWave Demo
+    </footer>
 
-  <div class="container info-box">
-    <h2>Why trust SoftWave?</h2>
-    <ul>
-      <li>100% safe environment for U18 users</li>
-      <li>No sign-in required (local owner ID optional)</li>
-      <li>Uploads visible to everyone in the marketplace</li>
-      <li>Profiles & portfolios for creators</li>
-      <li>Private by default until shared</li>
-    </ul>
-  </div>
 
-  <div class="container info-box">
-    <h2>Features</h2>
-    <ul>
-      <li>Instant upload & sharing links</li>
-      <li>Supports PDF, PPTX, DOCX, ZIP, EPUB & website embeds (CodePen)</li>
-      <li>Beautiful preview cards & CodePen embed preview</li>
-      <li>Profile portfolios show only that user's uploads</li>
-      <li>Delete your profile and your uploads</li>
-    </ul>
-  </div>
+    <!-- SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const $ = id => document.getElementById(id);
+            const toast = msg => alert(msg);
 
-  <div class="container info-box">
-    <h2>FAQ</h2>
-    <ul>
-      <li><strong>Q:</strong> Is it safe for U18? — <strong>A:</strong> Yes.</li>
-      <li><strong>Q:</strong> Do I need to sign up? — <strong>A:</strong> No; a unique local ID optionally marks ownership.</li>
-      <li><strong>Q:</strong> Can anyone view demos? — <strong>A:</strong> Yes — "View Demo" opens files or embeds.</li>
-      <li><strong>Q:</strong> Can I delete my uploads? — <strong>A:</strong> Yes; use delete buttons on products.</li>
-      <li><strong>Q:</strong> Can I delete my profile? — <strong>A:</strong> Yes; this also deletes all uploads by that profile.</li>
-    </ul>
-  </div>
-</section>
+            const getProfiles = () => JSON.parse(localStorage.getItem('softwaveProfiles') || '[]');
+            const saveProfiles = arr => localStorage.setItem('softwaveProfiles', JSON.stringify(arr));
+            const getProducts = () => JSON.parse(localStorage.getItem('softwaveProducts') || '[]');
+            const saveProducts = arr => localStorage.setItem('softwaveProducts', JSON.stringify(arr));
+            const getOwnerId = () => localStorage.getItem('softwaveUserId') || '';
+            const setOwnerId = id => localStorage.setItem('softwaveUserId', id);
+            const uid = () => 'user_' + Date.now() + '_' + Math.floor(Math.random() * 999);
 
-<section id="explore" style="display:none">
-  <div class="container">
-    <h2>Explore Marketplace</h2>
-    <div class="grid" id="explore-grid">
-      <div class="card small">No uploads yet.</div>
-    </div>
-  </div>
-</section>
+            function showPage(page) {
+                ['home', 'explore', 'profiles'].forEach(id => $(id).style.display = (id === page) ? 'block' : 'none');
+                document.querySelectorAll('nav a[data-page]').forEach(a => a.classList.remove('active'));
+                const a = document.querySelector(`nav a[data-page="${page}"]`);
+                if (a) a.classList.add('active');
+                if (page === 'explore') renderProducts();
+                if (page === 'profiles') renderProfiles();
+            }
 
-<section id="profiles" style="display:none">
-  <div class="container">
-    <h2>Seller Profiles</h2>
-    <div class="upload-card" id="profile-form-container">
-      <h3>Create Your Profile</h3>
-      <input id="profile-name" placeholder="Your name (required)">
-      <textarea id="profile-bio" placeholder="Short bio (required)" rows="3"></textarea>
-      <input id="profile-contact" placeholder="Contact number or link (optional)">
-      <input id="profile-img" placeholder="Profile image URL (optional)">
-      <div style="display:flex;gap:10px;margin-top:8px">
-        <button id="create-profile-btn" class="btn primary">Create Profile</button>
-        <button id="refresh-profiles" class="btn ghost">Refresh</button>
-      </div>
-    </div>
-    <div class="grid" id="profiles-grid"></div>
-  </div>
-</section>
+            document.querySelectorAll('nav a[data-page]').forEach(a => a.addEventListener('click', () => showPage(a.dataset.page)));
+            $('hero-explore-btn').addEventListener('click', () => showPage('explore'));
 
-<div id="demo-overlay"><button onclick="closeDemo()">Close</button><div id="demo-content"></div></div>
+            function renderProducts() {
+                const grid = $('explore-grid');
+                grid.innerHTML = '';
+                const products = getProducts();
+                const owner = getOwnerId();
+                if (!products.length) {
+                    grid.innerHTML = '<div class="card small">No uploads yet.</div>';
+                    return;
+                }
+                products.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    const thumbText = p.codepenUrl ? 'WEB' : (p.url.split('.').pop() || 'FILE').toUpperCase();
+                    const thumb = `<div class="thumb">${thumbText}</div>`;
+                    const title = `<div class="p-title">${p.title}</div>`;
+                    const meta = `<div class="p-meta">${p.desc || ''}</div>`;
+                    let actions = `<button class="btn ghost view-demo" data-url="${p.codepenUrl || p.url}">View Demo</button>`;
+                    if (owner && p.userId === owner) actions += `<button class="delete-btn delete-product" data-id="${p.id}">Delete</button>`;
+                    div.innerHTML = thumb + title + meta + `<div style="margin-top:10px">${actions}</div>`;
+                    grid.appendChild(div);
+                });
+            }
 
-<footer style="padding:24px;text-align:center;color:var(--muted)">Made with ❤️ — SoftWave Demo</footer>
+            function renderProfiles() {
+                const grid = $('profiles-grid');
+                grid.innerHTML = '';
+                const profiles = getProfiles();
+                const owner = getOwnerId();
+                if (!profiles.length) {
+                    grid.innerHTML = '<div class="card small">No profiles yet.</div>';
+                    return;
+                }
+                profiles.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    const image = `<img src="${p.img || 'https://via.placeholder.com/600x300?text=Profile'}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:8px">`;
+                    const name = `<h3>${p.name}</h3>`;
+                    const bio = `<div class="small">${p.bio}</div>`;
+                    const contact = `<div class="small" style="margin-top:6px">Contact: ${p.contact || 'N/A'}</div>`;
+                    const viewUploadsBtn = `<button class="btn ghost view-uploads" data-id="${p.userId}">View Uploads</button>`;
+                    const delBtn = owner === p.userId ? `<button class="delete-btn" data-id="${p.userId}">Delete Profile</button>` : '';
+                    div.innerHTML = image + name + bio + contact + viewUploadsBtn + delBtn;
+                    grid.appendChild(div);
+                });
+            }
 
-<!-- GUIDEBOT BUTTON -->
-<button id="guidebot-button">💬</button>
-<div id="guidebot-chat">
-  <div id="guidebot-messages"></div>
-  <div id="guidebot-input-container">
-    <input type="text" id="guidebot-input" placeholder="Ask me anything..." />
-    <button id="guidebot-send">Send</button>
-  </div>
-</div>
+            $('create-profile-btn').addEventListener('click', () => {
+                const name = $('profile-name').value.trim();
+                const bio = $('profile-bio').value.trim();
+                if (!name || !bio) { toast('Name and bio required'); return; }
+                const contact = $('profile-contact').value.trim();
+                const img = $('profile-img').value.trim();
+                let owner = getOwnerId();
+                if (!owner) { owner = uid(); setOwnerId(owner); }
+                const profiles = getProfiles();
+                profiles.push({ userId: owner, name, bio, contact, img });
+                saveProfiles(profiles);
+                toast('Profile created!');
+                $('profile-form-container').style.display = 'none';
+                renderProfiles();
+            });
 
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  const $ = id=>document.getElementById(id);
-  const toast = msg=>alert(msg);
-  const getProfiles = ()=>JSON.parse(localStorage.getItem('softwaveProfiles')||'[]');
-  const saveProfiles = arr=>localStorage.setItem('softwaveProfiles', JSON.stringify(arr));
-  const getProducts = ()=>JSON.parse(localStorage.getItem('softwaveProducts')||'[]');
-  const saveProducts = arr=>localStorage.setItem('softwaveProducts', JSON.stringify(arr));
-  const getOwnerId = ()=>localStorage.getItem('softwaveUserId')||'';
-  const setOwnerId = id=>localStorage.setItem('softwaveUserId', id);
-  const uid = ()=> 'user_'+Date.now()+'_'+Math.floor(Math.random()*999);
+            document.addEventListener('click', e => {
+                if (e.target.classList.contains('delete-btn')) {
+                    const id = e.target.dataset.id;
+                    let profiles = getProfiles().filter(p => p.userId !== id);
+                    saveProfiles(profiles);
+                    let products = getProducts().filter(p => p.userId !== id);
+                    saveProducts(products);
+                    toast('Profile and its uploads deleted!');
+                    renderProfiles();
+                    renderProducts();
+                }
+                if (e.target.classList.contains('delete-product')) {
+                    const id = e.target.dataset.id;
+                    let products = getProducts().filter(p => p.id !== id);
+                    saveProducts(products);
+                    toast('Upload deleted!');
+                    renderProducts();
+                }
+                if (e.target.classList.contains('view-demo')) {
+                    const url = e.target.dataset.url;
+                    if (!url) { toast('No demo available'); return; }
+                    $('demo-content').innerHTML = `<iframe src="${url}" style="width:100%;height:90vh;border:none;border-radius:10px"></iframe>`;
+                    $('demo-overlay').style.display = 'flex';
+                }
+                if (e.target.classList.contains('view-uploads')) {
+                    const userId = e.target.dataset.id;
+                    const userProducts = getProducts().filter(p => p.userId === userId);
+                    if (!userProducts.length) { toast('No uploads for this user'); return; }
+                    $('demo-content').innerHTML = '';
+                    userProducts.forEach(p => {
+                        const div = document.createElement('div');
+                        div.style.margin = '12px 0';
+                        div.innerHTML = `<strong>${p.title}</strong><br>${p.desc || ''}<br><button class="btn ghost view-demo" data-url="${p.codepenUrl || p.url}">View Demo</button>`;
+                        $('demo-content').appendChild(div);
+                    });
+                    $('demo-overlay').style.display = 'flex';
+                }
+            });
 
-  function showPage(page){
-    ['home','explore','profiles'].forEach(id=>$(id).style.display=(id===page)?'block':'none');
-    document.querySelectorAll('nav a[data-page]').forEach(a=>a.classList.remove('active'));
-    const a=document.querySelector(`nav a[data-page="${page}"]`);
-    if(a) a.classList.add('active');
-    if(page==='explore') renderProducts();
-    if(page==='profiles') renderProfiles();
-  }
+            $('refresh-profiles').addEventListener('click', () => renderProfiles());
+            $('clear-data').addEventListener('click', () => { localStorage.clear(); location.reload(); });
+            window.closeDemo = () => { $('demo-overlay').style.display = 'none'; $('demo-content').innerHTML = ''; };
+            showPage('home');
 
-  document.querySelectorAll('nav a[data-page]').forEach(a=>a.addEventListener('click', ()=>showPage(a.dataset.page)));
-  $('hero-explore-btn').addEventListener('click', ()=>showPage('explore'));
+            // GUIDEBOT FUNCTIONALITY
+            const guideButton = $('guidebot-button');
+            const guideChat = $('guidebot-chat');
+            const guideMessages = $('guidebot-messages');
+            const guideInput = $('guidebot-input');
+            const guideSend = $('guidebot-send');
 
-  function renderProducts(){
-    const grid=$('explore-grid'); grid.innerHTML='';
-    const products=getProducts(); const owner=getOwnerId();
-    if(!products.length){ grid.innerHTML='<div class="card small">No uploads yet.</div>'; return; }
-    products.forEach(p=>{
-      const div=document.createElement('div'); div.className='card';
-      const thumbText = p.codepenUrl ? 'WEB' : (p.url.split('.').pop()||'FILE').toUpperCase();
-      const thumb=`<div class="thumb">${thumbText}</div>`;
-      const title=`<div class="p-title">${p.title}</div>`;
-      const meta=`<div class="p-meta">${p.desc||''}</div>`;
-      let actions=`<button class="btn ghost view-demo" data-url="${p.codepenUrl||p.url}">View Demo</button>`;
-      if(owner && p.userId===owner) actions += ` <button class="delete-btn delete-product" data-id="${p.id}">Delete</button>`;
-      div.innerHTML=thumb+title+meta+`<div style="margin-top:10px">${actions}</div>`;
-      grid.appendChild(div);
-    });
-  }
+            guideButton.addEventListener('click', () => {
+                guideChat.style.display = guideChat.style.display === 'flex' ? 'none' : 'flex';
+                guideMessages.scrollTop = guideMessages.scrollHeight;
+            });
 
-  function renderProfiles(){
-    const grid=$('profiles-grid'); grid.innerHTML='';
-    const profiles=getProfiles(); const owner=getOwnerId();
-    if(!profiles.length){ grid.innerHTML='<div class="card small">No profiles yet.</div>'; return; }
-    profiles.forEach(p=>{
-      const div=document.createElement('div'); div.className='card';
-      const image=`<img src="${p.img||'https://via.placeholder.com/600x300?text=Profile'}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:8px">`;
-      const name=`<h3>${p.name}</h3>`;
-      const bio=`<div class="small">${p.bio}</div>`;
-      const contact=`<div class="small" style="margin-top:6px">Contact: ${p.contact||'N/A'}</div>`;
-      const viewUploadsBtn=`<button class="btn ghost view-uploads" data-id="${p.userId}">View Uploads</button>`;
-      const delBtn=owner===p.userId?` <button class="delete-btn" data-id="${p.userId}">Delete Profile</button>`:'';
-      div.innerHTML=image+name+bio+contact+viewUploadsBtn+delBtn;
-      grid.appendChild(div);
-    });
-  }
+            guideSend.addEventListener('click', sendGuideMessage);
+            guideInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendGuideMessage(); });
 
-  $('create-profile-btn').addEventListener('click', ()=>{
-    const name=$('profile-name').value.trim();
-    const bio=$('profile-bio').value.trim();
-    if(!name||!bio){toast('Name and bio required'); return;}
-    const contact=$('profile-contact').value.trim();
-    const img=$('profile-img').value.trim();
-    let owner=getOwnerId(); if(!owner){ owner=uid(); setOwnerId(owner);}
-    const profiles=getProfiles(); profiles.push({userId:owner,name,bio,contact,img});
-    saveProfiles(profiles); toast('Profile created!');
-    $('profile-form-container').style.display='none';
-    renderProfiles();
-  });
+            async function sendGuideMessage() {
+                const msg = guideInput.value.trim();
+                if (!msg) return;
+                guideMessages.innerHTML += `<div style="margin-bottom:8px"><strong>You:</strong> ${msg}</div>`;
+                guideInput.value = '';
+                guideMessages.scrollTop = guideMessages.scrollHeight;
 
-  document.addEventListener('click', e=>{
-    if(e.target.classList.contains('delete-btn')){
-      const id=e.target.dataset.id;
-      let profiles=getProfiles().filter(p=>p.userId!==id); saveProfiles(profiles);
-      let products=getProducts().filter(p=>p.userId!==id); saveProducts(products);
-      toast('Profile and its uploads deleted!');
-      renderProfiles(); renderProducts();
-    }
-    if(e.target.classList.contains('delete-product')){
-      const id=e.target.dataset.id;
-      let products=getProducts().filter(p=>p.id!==id); saveProducts(products); toast('Upload deleted!');
-      renderProducts();
-    }
-    if(e.target.classList.contains('view-demo')){
-      const url=e.target.dataset.url; if(!url){toast('No demo available'); return;}
-      $('demo-content').innerHTML=`<iframe src="${url}" style="width:100%;height:90vh;border:none;border-radius:10px"></iframe>`;
-      $('demo-overlay').style.display='flex';
-    }
-    if(e.target.classList.contains('view-uploads')){
-      const userId=e.target.dataset.id;
-      const userProducts = getProducts().filter(p=>p.userId===userId);
-      if(!userProducts.length){toast('No uploads for this user'); return;}
-      $('demo-content').innerHTML='';
-      userProducts.forEach(p=>{
-        const div=document.createElement('div'); div.style.margin='12px 0';
-        div.innerHTML=`<strong>${p.title}</strong><br>${p.desc||''}<br><button class="btn ghost view-demo" data-url="${p.codepenUrl||p.url}">View Demo</button>`;
-        $('demo-content').appendChild(div);
-      });
-      $('demo-overlay').style.display='flex';
-    }
-  });
-
-  $('refresh-profiles').addEventListener('click', ()=>renderProfiles());
-  $('clear-data').addEventListener('click', ()=>{localStorage.clear(); location.reload();});
-  window.closeDemo = ()=>{$('demo-overlay').style.display='none'; $('demo-content').innerHTML='';};
-  showPage('home');
-
-  // GUIDEBOT FUNCTIONALITY
-  const guideButton = $('guidebot-button');
-  const guideChat = $('guidebot-chat');
-  const guideMessages = $('guidebot-messages');
-  const guideInput = $('guidebot-input');
-  const guideSend = $('guidebot-send');
-
-  guideButton.addEventListener('click', ()=>{ guideChat.style.display = guideChat.style.display==='flex'?'none':'flex'; guideMessages.scrollTop=guideMessages.scrollHeight; });
-  guideSend.addEventListener('click', sendGuideMessage);
-  guideInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendGuideMessage(); });
-
-  async function sendGuideMessage(){
-    const msg = guideInput.value.trim(); if(!msg) return;
-    guideMessages.innerHTML += `<div style="margin-bottom:8px"><strong>You:</strong> ${msg}</div>`;
-    guideInput.value=''; guideMessages.scrollTop=guideMessages.scrollHeight;
-
-    try{
-      const res = await fetch('http://localhost:3000/ask-bot',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message:msg})
-      });
-      const data = await res.json();
-      guideMessages.innerHTML += `<div style="margin-bottom:8px"><strong>GuideBot:</strong> ${data.reply||'No response'}</div>`;
-      guideMessages.scrollTop=guideMessages.scrollHeight;
-    }catch(err){
-      guideMessages.innerHTML += `<div style="margin-bottom:8px;color:var(--danger)"><strong>GuideBot:</strong> Error contacting backend</div>`;
-    }
-  }
-
-});
-</script>
-
+                try {
+                    const res = await fetch('http://localhost:3000/ask-bot', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: msg })
+                    });
+                    const data = await res.json();
+                    guideMessages.innerHTML += `<div style="margin-bottom:8px"><strong>GuideBot:</strong> ${data.reply || 'No response'}</div>`;
+                    guideMessages.scrollTop = guideMessages.scrollHeight;
+                } catch (err) {
+                    guideMessages.innerHTML += `<div style="margin-bottom:8px;color:var(--danger)"><strong>GuideBot:</strong> Error contacting backend</div>`;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
